@@ -1,0 +1,202 @@
+<!-- miniapp.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Snake Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1e90ff, #000);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+    h1 { margin: 8px 0 16px; font-size: 24px; text-align: center; }
+    #score { margin-bottom: 8px; font-size: 18px; }
+    canvas {
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.6);
+      background: #000;
+    }
+    .controls {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 64px);
+      grid-template-rows: repeat(2, 64px);
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      font-size: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+    }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+      background: rgba(255,255,255,0.15);
+    }
+    .btn.hidden {
+      visibility: hidden;
+    }
+    .bottom {
+      margin-top: 16px;
+      font-size: 14px;
+      opacity: 0.8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>🐍 Snake Mini App</h1>
+  <div id="score">Счёт: 0</div>
+  <canvas id="game" width="300" height="300"></canvas>
+
+  <div class="controls">
+    <div class="btn hidden"></div>
+    <button class="btn" id="btnUp">⬆️</button>
+    <div class="btn hidden"></div>
+
+    <button class="btn" id="btnLeft">⬅️</button>
+    <button class="btn" id="btnDown">⬇️</button>
+    <button class="btn" id="btnRight">➡️</button>
+  </div>
+
+  <div class="bottom">
+    Нажми стрелки для управления змейкой.<br />
+    Кнопка Telegram внизу сохранит результат в чат.
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const scoreLabel = document.getElementById("score");
+
+    const CELL = 15;
+    const COLS = canvas.width / CELL;
+    const ROWS = canvas.height / CELL;
+
+    let snake = [{ x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) }];
+    let dx = 1;
+    let dy = 0;
+    let food = spawnFood();
+    let score = 0;
+    let alive = true;
+
+    function spawnFood() {
+      while (true) {
+        const fx = Math.floor(Math.random() * COLS);
+        const fy = Math.floor(Math.random() * ROWS);
+        if (!snake.some((s) => s.x === fx && s.y === fy)) {
+          return { x: fx, y: fy };
+        }
+      }
+    }
+
+    function gameLoop() {
+      if (!alive) return;
+      move();
+      draw();
+      setTimeout(gameLoop, 160);
+    }
+
+    function move() {
+      const head = snake[0];
+      const newHead = { x: head.x + dx, y: head.y + dy };
+
+      if (
+        newHead.x < 0 ||
+        newHead.x >= COLS ||
+        newHead.y < 0 ||
+        newHead.y >= ROWS ||
+        snake.some((s) => s.x === newHead.x && s.y === newHead.y)
+      ) {
+        alive = false;
+        tg.MainButton.setText(`💾 Сохранить (${score})`).show();
+        alert(`Игра окончена! Счёт: ${score}`);
+        return;
+      }
+
+      snake.unshift(newHead);
+
+      if (newHead.x === food.x && newHead.y === food.y) {
+        score += 1;
+        scoreLabel.textContent = `Счёт: ${score}`;
+        food = spawnFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function draw() {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#f00";
+      ctx.fillRect(food.x * CELL, food.y * CELL, CELL, CELL);
+
+      snake.forEach((part, i) => {
+        ctx.fillStyle = i === 0 ? "#0f0" : "#0a0";
+        ctx.fillRect(part.x * CELL, part.y * CELL, CELL, CELL);
+      });
+    }
+
+    function setDir(nx, ny) {
+      if (!alive) return;
+      if (nx === -dx && ny === -dy) return;
+      dx = nx;
+      dy = ny;
+    }
+
+    document.getElementById("btnUp").addEventListener("click", () => setDir(0, -1));
+    document.getElementById("btnDown").addEventListener("click", () => setDir(0, 1));
+    document.getElementById("btnLeft").addEventListener("click", () => setDir(-1, 0));
+    document.getElementById("btnRight").addEventListener("click", () => setDir(1, 0));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp") setDir(0, -1);
+      if (e.key === "ArrowDown") setDir(0, 1);
+      if (e.key === "ArrowLeft") setDir(-1, 0);
+      if (e.key === "ArrowRight") setDir(1, 0);
+    });
+
+    tg.MainButton.setText("💾 Сохранить результат").hide();
+    tg.MainButton.onClick(() => {
+      tg.sendData(
+        JSON.stringify({
+          game: "mini_snake",
+          score: score,
+        })
+      );
+      tg.close();
+    });
+
+    draw();
+    gameLoop();
+  </script>
+</body>
+</html>
