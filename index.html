@@ -1,66 +1,66 @@
 <!-- miniapp.html -->
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>Snake Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #1e90ff, #000);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px;
+htmlhtml язык="ру""ру"
+<голова>
+ метамета набор символов="УТФ-8" />
+ метамета
+ имя="область просмотра"
+ содержание="ширина=ширина устройства, начальный масштаб=1.0"
+ />
+ заголовокзаголовок>Мини-приложение «Змея»заголовок</>
+ сценарийсценарий источник="https://telegram.org/js/telegram-web-app.js"сценарий"https://telegram.org/js/telegram-web-app.js"сценарий>
+  <стиль>
+ * { размер коробки: пограничная коробка; маржа: 0; прокладка: 0; }
+ тело {
+ семейство шрифтов: -apple-система, BlinkMacSystemFont, "Segoe UI", Робото, без заповеди;
+ фон: райдиальнийныыѹ градиент(круг в вершину, #1e90ff, #000);
+ цвет: #fff;
+ мин-высота: 100вх;
+ отображать: сгибать;
+ гибкое направление: столбец;
+ выравнивание элементов: центр;
+ прокладка: 16пх;
     }
-    h1 { margin: 8px 0 16px; font-size: 24px; text-align: center; }
-    #score { margin-bottom: 8px; font-size: 18px; }
-    canvas {
-      border-radius: 12px;
-      border: 2px solid rgba(255,255,255,0.6);
-      background: #000;
+ ч1 { маржа: 8пх 0 16пх; размер шрифта: 24пх; выравнивание текста: центр; }
+ #счет { маржа-дно: 8пх; размер шрифта: 18пх; }
+ холст {
+ радиус границы: 12пх;
+ граница: 2пх твердый ргба(255,255,255,0,6);
+ фон: #000;
     }
-    .controls {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(3, 64px);
-      grid-template-rows: repeat(2, 64px);
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
+ .элементы управления {
+ край-верх: 16пх;
+ отображать: сетка;
+ сетка-шаблон-столбцы: повторить(3, 64пх);
+ сетка-шаблон-строки: повторить(2, 64пх);
+ зазор: 8пх;
+ оправдать-содержание: центр;
+ выравнивание элементов: центр;
     }
-    .btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(0,0,0,0.4);
-      color: #fff;
-      font-size: 26px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+ .бтн {
+ ширина: 64пх;
+ высота: 64пх;
+ радиус границы: 50%;
+ граница: никто;
+ фон: ргба(0,0,0,0,4);
+ цвет: #fff;
+ размер шрифта: 26пх;
+ отображать: сгибать;
+ оправдать-содержание: центр;
+ выравнивание элементов: центр;
+ курсор: указатель;
+ тень от ящика: 0 4пх 10пх ргба(0,0,0,0,4);
+ переход: трансформировать 0,1с, тэнь от ящика 0,1с, фон 0,1с;
     }
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
-      background: rgba(255,255,255,0.15);
+ .бтн:активный {
+ трансформировать: переводY(1пх);
+ тень от ящика: 0 2пх 5пх ргба(0,0,0,0,6);
+ фон: ргба(255,255,255,0,15);
     }
-    .btn.hidden {
-      visibility: hidden;
+ .бтн.скрытый {
+ видимость: скрытый;
     }
-    .bottom {
+ .нижний {
       margin-top: 16px;
       font-size: 14px;
       opacity: 0.8;
@@ -200,3 +200,4 @@
   </script>
 </body>
 </html>
+
